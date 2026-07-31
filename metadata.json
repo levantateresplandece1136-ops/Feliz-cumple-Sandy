@@ -1,0 +1,6 @@
+{
+  "name": "Siempre Estuviste Siendo Amada - Birthday Special",
+  "description": "Una experiencia móvil cinemática para celebrar el cumpleaños de Sandy: episodios interactivos, fases lunares, música y mensajes especiales.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
