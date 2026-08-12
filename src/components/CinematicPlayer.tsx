@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { EPISODES_DATA } from '../data/episodesData';
 import { soundEngine } from '../audio/soundEngine';
+import childhoodPlayImg from '../assets/images/childhood_play_scene_1786504331319.jpg';
+import solitudeWindowImg from '../assets/images/solitude_window_scene_1786504814783.jpg';
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,18 +26,19 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   onEpisodeChange,
   onNavigateTab
 }) => {
-  // Step index: 0 = prelude 1, 1 = prelude 2, 2 = intro title, 3..11 = ep 1..9, 12 = closing
+  // Step index: 0 = Opening image quote, 1 = prelude 1, 2 = prelude 2, 3 = intro title, 4 = childhood image, 5 = ep 1, 6 = solitude image, 7..15 = ep 2..9, 16 = closing
   const [step, setStep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [showChaptersDrawer, setShowChaptersDrawer] = useState<boolean>(false);
 
-  // Auto-play timer
+  // Auto-play timer (15s for episodes, 10s for intro/image steps)
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isPlaying) {
+      const displayDuration = (step <= 4 || step === 6) ? 10000 : 15000;
       timer = setTimeout(() => {
         handleNext();
-      }, 7000);
+      }, displayDuration);
     }
     return () => clearTimeout(timer);
   }, [isPlaying, step]);
@@ -43,14 +46,29 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   // Audio trigger & moon shadow update when step changes
   useEffect(() => {
     let shadowOffset = '-78%';
-    if (step === 0 || step === 1) {
+    if (step <= 2) {
       soundEngine.playHeartbeat();
       shadowOffset = '-78%';
-    } else if (step === 2) {
+    } else if (step === 3) {
       soundEngine.startAmbientPad();
       shadowOffset = '-78%';
-    } else if (step >= 3 && step <= 11) {
-      const epIndex = step - 3;
+    } else if (step === 4) {
+      soundEngine.playPianoMelody();
+      shadowOffset = '-70%';
+    } else if (step === 5) {
+      // Episode 1
+      const ep = EPISODES_DATA[0];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+      }
+    } else if (step === 6) {
+      // Solitude image before Episode 2
+      soundEngine.playHeartbeat();
+      shadowOffset = '-55%';
+    } else if (step >= 7 && step <= 15) {
+      const epIndex = step - 6;
       const ep = EPISODES_DATA[epIndex];
       if (ep) {
         shadowOffset = ep.shadowOffsetX;
@@ -62,7 +80,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
           confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
         }
       }
-    } else if (step === 12) {
+    } else if (step === 16) {
       soundEngine.playChime();
       shadowOffset = '78%';
     }
@@ -71,7 +89,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   }, [step]);
 
   const handleNext = () => {
-    if (step < 12) {
+    if (step < 16) {
       setStep((prev) => prev + 1);
     } else {
       setIsPlaying(false);
@@ -84,59 +102,102 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
     }
   };
 
-  const currentEpIndex = step >= 3 && step <= 11 ? step - 3 : null;
+  const currentEpIndex = step === 5 ? 0 : (step >= 7 && step <= 15 ? step - 6 : null);
   const currentEp = currentEpIndex !== null ? EPISODES_DATA[currentEpIndex] : null;
 
   return (
     <div className="relative w-full min-h-[calc(100vh-8rem)] flex flex-col justify-between items-center px-4 py-6 text-center select-none max-w-xl mx-auto">
       {/* Top Bar Indicators & Drawer button */}
-      <div className="w-full flex items-center justify-between text-xs text-[#c9a86a]/80 mb-2 px-2 z-20">
-        <button
-          onClick={() => setShowChaptersDrawer(!showChaptersDrawer)}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#131a33]/80 border border-[#c9a86a]/30 hover:border-[#c9a86a] text-[#f2ecd8] transition-all"
-        >
-          <Grid className="w-3.5 h-3.5 text-[#c9a86a]" />
-          <span>Capítulos</span>
-        </button>
+      <div className="w-full flex flex-col gap-2 mb-2 px-2 z-20">
+        <div className="w-full flex items-center justify-between text-xs text-[#c9a86a]/80">
+          <button
+            onClick={() => setShowChaptersDrawer(!showChaptersDrawer)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#131a33]/80 border border-[#c9a86a]/30 hover:border-[#c9a86a] text-[#f2ecd8] transition-all"
+          >
+            <Grid className="w-3.5 h-3.5 text-[#c9a86a]" />
+            <span>Capítulos</span>
+          </button>
 
-        {/* Progress dots */}
-        <div className="flex items-center gap-1">
-          {Array.from({ length: 13 }).map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setStep(idx)}
-              className={`w-1.5 h-1.5 rounded-full transition-all ${
-                idx === step
-                  ? 'bg-[#c9a86a] w-3 shadow-[0_0_8px_#c9a86a]'
-                  : idx < step
-                  ? 'bg-[#f2ecd8]/50'
-                  : 'bg-[#131a33]/60 border border-[#f2ecd8]/20'
-              }`}
-            />
-          ))}
+          {/* Progress dots */}
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 17 }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setStep(idx)}
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === step
+                    ? 'bg-[#c9a86a] w-3.5 shadow-[0_0_8px_#c9a86a]'
+                    : idx < step
+                    ? 'bg-[#f2ecd8]/50 w-1.5'
+                    : 'bg-[#131a33]/60 border border-[#f2ecd8]/20 w-1.5'
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Play/Pause Auto-sequence toggle */}
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className={`p-1.5 rounded-full border transition-all flex items-center gap-1 ${
+              isPlaying
+                ? 'bg-[#c9a86a]/25 border-[#c9a86a] text-[#c9a86a] shadow-[0_0_12px_rgba(201,168,106,0.3)]'
+                : 'bg-[#131a33]/80 border-[#c9a86a]/30 text-[#c9a86a] hover:bg-[#c9a86a]/20'
+            }`}
+            title={isPlaying ? 'Pausar avance automático' : 'Avance automático suave'}
+          >
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+          </button>
         </div>
 
-        {/* Play/Pause Auto-sequence toggle */}
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className="p-1.5 rounded-full bg-[#131a33]/80 border border-[#c9a86a]/30 text-[#c9a86a] hover:bg-[#c9a86a]/20 transition-all"
-          title={isPlaying ? 'Pausar avance automático' : 'Avance automático'}
-        >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-        </button>
+        {/* Smooth auto-play reading progress bar */}
+        {isPlaying && (
+          <div className="w-full h-0.5 bg-[#131a33] rounded-full overflow-hidden">
+            <motion.div
+              key={`timer-${step}`}
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: (step <= 4 || step === 6) ? 10 : 15, ease: 'linear' }}
+              className="h-full bg-gradient-to-r from-[#c9a86a]/60 via-[#f2ecd8] to-[#c9a86a]"
+            />
+          </div>
+        )}
       </div>
 
       {/* Main Scene Content Container with Motion Animation */}
       <div className="w-full flex-1 flex flex-col items-center justify-center py-6 my-auto z-10">
         <AnimatePresence mode="wait">
-          {/* STEP 0: Prelude line 1 */}
+          {/* STEP 0: Opening Image / Quote Slide */}
           {step === 0 && (
             <motion.div
               key="step-0"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.03 }}
+              transition={{ duration: 1.5, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center py-4"
+            >
+              <div className="w-full max-w-lg bg-black border border-[#c9a86a]/30 rounded-2xl p-10 sm:p-14 shadow-[0_0_60px_rgba(0,0,0,0.95)] flex flex-col items-center justify-center min-h-[240px] sm:min-h-[280px] relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] via-transparent to-black pointer-events-none" />
+                <p className="font-serif text-2xl sm:text-3xl text-white font-normal leading-relaxed tracking-wide text-center relative z-10 drop-shadow-md">
+                  Antes de que alguien<br />
+                  pudiera contar tu historia...
+                </p>
+                <span className="mt-8 text-[10px] font-sans text-[#c9a86a]/70 uppercase tracking-[0.25em] relative z-10 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c9a86a]" />
+                  Inicio
+                </span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* STEP 1: Prelude line 1 */}
+          {step === 1 && (
+            <motion.div
+              key="step-1"
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.8 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
               className="space-y-6 max-w-md my-auto"
             >
               <span className="inline-block px-3 py-1 rounded-full bg-[#c9a86a]/10 border border-[#c9a86a]/30 text-[#c9a86a] font-sans text-xs uppercase tracking-widest">
@@ -148,14 +209,14 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             </motion.div>
           )}
 
-          {/* STEP 1: Prelude line 2 */}
-          {step === 1 && (
+          {/* STEP 2: Prelude line 2 */}
+          {step === 2 && (
             <motion.div
-              key="step-1"
-              initial={{ opacity: 0, y: 20 }}
+              key="step-2"
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.8 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
               className="space-y-6 max-w-md my-auto"
             >
               <span className="inline-block px-3 py-1 rounded-full bg-[#c9a86a]/10 border border-[#c9a86a]/30 text-[#c9a86a] font-sans text-xs uppercase tracking-widest">
@@ -167,14 +228,14 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             </motion.div>
           )}
 
-          {/* STEP 2: Title Intro */}
-          {step === 2 && (
+          {/* STEP 3: Title Intro */}
+          {step === 3 && (
             <motion.div
-              key="step-2"
-              initial={{ opacity: 0, scale: 0.95 }}
+              key="step-3"
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.5, ease: 'easeInOut' }}
               className="space-y-6 my-auto max-w-md"
             >
               <div className="w-16 h-16 rounded-full bg-[#c9a86a]/15 border border-[#c9a86a]/50 mx-auto flex items-center justify-center shadow-[0_0_25px_rgba(201,168,106,0.3)]">
@@ -191,19 +252,107 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
                 onClick={handleNext}
                 className="mt-6 px-8 py-3 rounded-full bg-gradient-to-r from-[#c9a86a]/20 to-[#b98a95]/20 border border-[#c9a86a] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#c9a86a]/30 transition-all active:scale-95 shadow-[0_0_20px_rgba(201,168,106,0.2)]"
               >
-                Comenzar Episodios
+                Continuar
               </button>
             </motion.div>
           )}
 
-          {/* STEP 3..11: Episodes 1..9 */}
+          {/* STEP 4: Childhood Scene (Right before Episode 1) */}
+          {step === 4 && (
+            <motion.div
+              key="step-4"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#c9a86a]/40 shadow-[0_0_50px_rgba(201,168,106,0.3)] group">
+                <img
+                  src={childhoodPlayImg}
+                  alt="Infancia y juego bajo el sol"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "Donde todo comenzó: en la inocencia, bajo la luz tibia de un nuevo día..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#c9a86a]/15 border border-[#c9a86a]/40 text-[#c9a86a] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Apertura de la Serie
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 1
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#c9a86a]/30 to-[#b98a95]/30 border border-[#c9a86a] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#c9a86a]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(201,168,106,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 1</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 6: Solitude Scene (Right before Episode 2) */}
+          {step === 6 && (
+            <motion.div
+              key="step-6"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#14b8a6]/40 shadow-[0_0_50px_rgba(20,184,166,0.2)] group">
+                <img
+                  src={solitudeWindowImg}
+                  alt="Mirando por la ventana en día lluvioso"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "En los días de lluvia y en el silencio de tu habitación, Dios nunca dejó de mirarte..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#14b8a6]/15 border border-[#14b8a6]/40 text-[#14b8a6] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 2 — Amor Incondicional
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#14b8a6]/30 to-[#c9a86a]/30 border border-[#14b8a6] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#14b8a6]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(20,184,166,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 2</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 5 & STEP 7..15: Episodes 1..9 */}
           {currentEp && (
             <motion.div
               key={`ep-${currentEp.id}`}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.7 }}
+              transition={{ duration: 1.3, ease: 'easeInOut' }}
               className="w-full space-y-5 my-auto max-w-md"
             >
               {/* Acrostic Letter Badge */}
@@ -265,14 +414,14 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             </motion.div>
           )}
 
-          {/* STEP 12: Final Scene / Transition to Dedication */}
-          {step === 12 && (
+          {/* STEP 16: Final Scene / Transition to Dedication */}
+          {step === 16 && (
             <motion.div
-              key="step-12"
+              key="step-16"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.9 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
               className="space-y-6 my-auto max-w-md"
             >
               <div className="w-16 h-16 rounded-full bg-[#b98a95]/20 border border-[#b98a95]/60 mx-auto flex items-center justify-center text-[#b98a95] shadow-[0_0_30px_rgba(185,138,149,0.3)]">
@@ -316,16 +465,24 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
         </button>
 
         <span className="font-sans text-xs text-[#c9a86a] font-medium tracking-widest uppercase">
-          {step === 0 || step === 1
-            ? 'Prólogo'
-            : step === 2
+          {step === 0
             ? 'Inicio'
-            : step === 12
+            : step === 1 || step === 2
+            ? 'Prólogo'
+            : step === 3
+            ? 'Presentación'
+            : step === 4
+            ? 'Escena 1 — Infancia'
+            : step === 5
+            ? 'Episodio 1 / 9'
+            : step === 6
+            ? 'Escena 2 — La Soledad'
+            : step === 16
             ? 'Final'
-            : `Episodio ${step - 2} / 9`}
+            : `Episodio ${step - 5} / 9`}
         </span>
 
-        {step < 12 ? (
+        {step < 16 ? (
           <button
             onClick={handleNext}
             className="p-3 rounded-full bg-[#c9a86a]/20 border border-[#c9a86a] text-[#c9a86a] hover:bg-[#c9a86a] hover:text-[#0a0e1f] transition-all active:scale-90 shadow-[0_0_15px_rgba(201,168,106,0.3)]"
@@ -369,17 +526,50 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             <div className="grid grid-cols-1 gap-2 max-h-[60vh] overflow-y-auto pr-1">
               <button
                 onClick={() => {
-                  setStep(2);
+                  setStep(0);
                   setShowChaptersDrawer(false);
                 }}
                 className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#c9a86a]/20 border border-[#c9a86a]/20 text-xs text-[#f2ecd8] flex items-center justify-between"
               >
-                <span className="font-medium text-[#c9a86a]">Inicio — Título Principal</span>
+                <span className="font-medium text-[#c9a86a]">Inicio — Apertura</span>
                 <Sparkles className="w-3.5 h-3.5 text-[#c9a86a]" />
               </button>
 
+              <button
+                onClick={() => {
+                  setStep(3);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#c9a86a]/20 border border-[#c9a86a]/20 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#c9a86a]">Presentación — Título Principal</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#c9a86a]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(4);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#c9a86a]/20 border border-[#c9a86a]/20 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#c9a86a]">Escena Visual 1 — La Luz de la Infancia</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#c9a86a]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(6);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#14b8a6]/20 border border-[#14b8a6]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#14b8a6]">Escena Visual 2 — La Soledad en la Ventana</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#14b8a6]" />
+              </button>
+
               {EPISODES_DATA.map((ep, idx) => {
-                const epStep = idx + 3;
+                const epStep = idx === 0 ? 5 : idx + 6;
                 const isCurrent = step === epStep;
                 return (
                   <button
