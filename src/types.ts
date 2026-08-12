@@ -1,4 +1,4 @@
-export type ViewTab = 'cinematic' | 'acrostic' | 'cake' | 'memories' | 'wishes' | 'dedication';
+export type ViewTab = 'cinematic' | 'acrostic' | 'cake' | 'memories' | 'dedication';
 
 export interface Episode {
   id: number;

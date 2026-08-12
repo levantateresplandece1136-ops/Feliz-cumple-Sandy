@@ -11,7 +11,6 @@ import { CinematicPlayer } from './components/CinematicPlayer';
 import { AcrosticView } from './components/AcrosticView';
 import { BirthdayCakeView } from './components/BirthdayCakeView';
 import { MemoriesTimeline } from './components/MemoriesTimeline';
-import { WishesView } from './components/WishesView';
 import { DedicationView } from './components/DedicationView';
 
 export default function App() {
@@ -104,7 +103,7 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.3 }}
               >
-                <BirthdayCakeView onGoToWishes={() => handleSelectTab('wishes')} />
+                <BirthdayCakeView onGoToDedication={() => handleSelectTab('dedication')} />
               </motion.div>
             )}
 
@@ -117,18 +116,6 @@ export default function App() {
                 transition={{ duration: 0.3 }}
               >
                 <MemoriesTimeline />
-              </motion.div>
-            )}
-
-            {activeTab === 'wishes' && (
-              <motion.div
-                key="tab-wishes"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <WishesView />
               </motion.div>
             )}
 

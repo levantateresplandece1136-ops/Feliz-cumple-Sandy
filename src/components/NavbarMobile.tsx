@@ -47,7 +47,6 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
     { tab: 'acrostic', label: 'S-A-N-D-Y', icon: <Sparkles className="w-4 h-4" /> },
     { tab: 'cake', label: 'Pastel', icon: <Cake className="w-4 h-4" /> },
     { tab: 'memories', label: 'Historias', icon: <BookOpen className="w-4 h-4" /> },
-    { tab: 'wishes', label: 'Deseos', icon: <HeartHandshake className="w-4 h-4" /> },
     { tab: 'dedication', label: 'Carta', icon: <Gift className="w-4 h-4" /> },
   ];
 

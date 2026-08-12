@@ -5,10 +5,10 @@ import confetti from 'canvas-confetti';
 import { Sparkles, Heart, RefreshCw, Flame, Gift, Volume2 } from 'lucide-react';
 
 interface BirthdayCakeViewProps {
-  onGoToWishes: () => void;
+  onGoToDedication: () => void;
 }
 
-export const BirthdayCakeView: React.FC<BirthdayCakeViewProps> = ({ onGoToWishes }) => {
+export const BirthdayCakeView: React.FC<BirthdayCakeViewProps> = ({ onGoToDedication }) => {
   // 5 candles corresponding to S-A-N-D-Y
   const [candles, setCandles] = useState<boolean[]>([true, true, true, true, true]);
   const [wishRevealed, setWishRevealed] = useState<boolean>(false);
@@ -198,10 +198,10 @@ export const BirthdayCakeView: React.FC<BirthdayCakeViewProps> = ({ onGoToWishes
               </span>
 
               <button
-                onClick={onGoToWishes}
+                onClick={onGoToDedication}
                 className="px-4 py-1.5 rounded-full bg-[#c9a86a] text-[#0a0e1f] font-sans font-semibold text-xs tracking-wide hover:bg-[#f2ecd8] transition-all"
               >
-                Ver Muro de Deseos →
+                Leer Carta Especial →
               </button>
             </div>
           </motion.div>

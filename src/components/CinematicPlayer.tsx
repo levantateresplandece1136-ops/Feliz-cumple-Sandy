@@ -4,6 +4,11 @@ import { EPISODES_DATA } from '../data/episodesData';
 import { soundEngine } from '../audio/soundEngine';
 import childhoodPlayImg from '../assets/images/childhood_play_scene_1786504331319.jpg';
 import solitudeWindowImg from '../assets/images/solitude_window_scene_1786504814783.jpg';
+import kitchenCoupleImg from '../assets/images/kitchen_couple_scene_1786506691208.jpg';
+import sistersDressesImg from '../assets/images/sisters_dresses_scene_1786506989973.jpg';
+import teacherClassroomImg from '../assets/images/teacher_classroom_scene_1786507223560.jpg';
+import framedPhotoBibleImg from '../assets/images/framed_photo_bible_scene_1786507765466.jpg';
+import womanPhotoRoomImg from '../assets/images/woman_photo_room_1786508068196.jpg';
 import {
   ChevronLeft,
   ChevronRight,
@@ -26,7 +31,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   onEpisodeChange,
   onNavigateTab
 }) => {
-  // Step index: 0 = Opening image quote, 1 = prelude 1, 2 = prelude 2, 3 = intro title, 4 = childhood image, 5 = ep 1, 6 = solitude image, 7..15 = ep 2..9, 16 = closing
+  // Step index: 0 = Opening image quote, 1 = prelude 1, 2 = prelude 2, 3 = intro title, 4 = childhood image, 5 = ep 1, 6 = solitude image, 7 = ep 2, 8 = kitchen image, 9 = ep 3, 10 = ep 4, 11 = sisters image, 12 = ep 5, 13 = teacher classroom image, 14 = ep 6, 15 = framed photo bible image, 16 = ep 7, 17 = woman bedroom photo image, 18 = ep 8, 19 = ep 9, 20 = closing
   const [step, setStep] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [showChaptersDrawer, setShowChaptersDrawer] = useState<boolean>(false);
@@ -35,7 +40,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isPlaying) {
-      const displayDuration = (step <= 4 || step === 6) ? 10000 : 15000;
+      const displayDuration = (step <= 4 || step === 6 || step === 8 || step === 11 || step === 13 || step === 15 || step === 17) ? 10000 : 15000;
       timer = setTimeout(() => {
         handleNext();
       }, displayDuration);
@@ -67,8 +72,74 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
       // Solitude image before Episode 2
       soundEngine.playHeartbeat();
       shadowOffset = '-55%';
-    } else if (step >= 7 && step <= 15) {
-      const epIndex = step - 6;
+    } else if (step === 7) {
+      // Episode 2
+      const ep = EPISODES_DATA[1];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+      }
+    } else if (step === 8) {
+      // Kitchen couple image before Episode 3
+      soundEngine.playPianoMelody();
+      shadowOffset = '-40%';
+    } else if (step === 9 || step === 10) {
+      // Episode 3 and Episode 4
+      const epIndex = step - 7;
+      const ep = EPISODES_DATA[epIndex];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+        else if (ep.audioCue === 'chime') soundEngine.playChime();
+      }
+    } else if (step === 11) {
+      // Sisters image before Episode 5
+      soundEngine.playChime();
+      shadowOffset = '10%';
+    } else if (step === 12) {
+      // Episode 5
+      const ep = EPISODES_DATA[4];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+        else if (ep.audioCue === 'chime') soundEngine.playChime();
+      }
+    } else if (step === 13) {
+      // Teacher classroom image before Episode 6
+      soundEngine.playChime();
+      shadowOffset = '28%';
+    } else if (step === 14) {
+      // Episode 6
+      const ep = EPISODES_DATA[5];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+        else if (ep.audioCue === 'chime') soundEngine.playChime();
+      }
+    } else if (step === 15) {
+      // Framed photo & Bible image before Episode 7
+      soundEngine.playPianoMelody();
+      shadowOffset = '45%';
+    } else if (step === 16) {
+      // Episode 7
+      const ep = EPISODES_DATA[6];
+      if (ep) {
+        shadowOffset = ep.shadowOffsetX;
+        if (ep.audioCue === 'heartbeat') soundEngine.playHeartbeat();
+        else if (ep.audioCue === 'piano') soundEngine.playPianoMelody();
+        else if (ep.audioCue === 'chime') soundEngine.playChime();
+      }
+    } else if (step === 17) {
+      // Woman bedroom photo image before Episode 8
+      soundEngine.playHeartbeat();
+      shadowOffset = '60%';
+    } else if (step === 18 || step === 19) {
+      // Episodes 8 & 9
+      const epIndex = step - 11;
       const ep = EPISODES_DATA[epIndex];
       if (ep) {
         shadowOffset = ep.shadowOffsetX;
@@ -80,7 +151,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
           confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
         }
       }
-    } else if (step === 16) {
+    } else if (step === 20) {
       soundEngine.playChime();
       shadowOffset = '78%';
     }
@@ -89,7 +160,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
   }, [step]);
 
   const handleNext = () => {
-    if (step < 16) {
+    if (step < 20) {
       setStep((prev) => prev + 1);
     } else {
       setIsPlaying(false);
@@ -102,7 +173,8 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
     }
   };
 
-  const currentEpIndex = step === 5 ? 0 : (step >= 7 && step <= 15 ? step - 6 : null);
+  const currentEpIndex =
+    step === 5 ? 0 : step === 7 ? 1 : step === 9 || step === 10 ? step - 7 : step === 12 ? 4 : step === 14 ? 5 : step === 16 ? 6 : step === 18 || step === 19 ? step - 11 : null;
   const currentEp = currentEpIndex !== null ? EPISODES_DATA[currentEpIndex] : null;
 
   return (
@@ -120,7 +192,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
 
           {/* Progress dots */}
           <div className="flex items-center gap-1">
-            {Array.from({ length: 17 }).map((_, idx) => (
+            {Array.from({ length: 21 }).map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setStep(idx)}
@@ -156,7 +228,7 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               key={`timer-${step}`}
               initial={{ width: '0%' }}
               animate={{ width: '100%' }}
-              transition={{ duration: (step <= 4 || step === 6) ? 10 : 15, ease: 'linear' }}
+              transition={{ duration: (step <= 4 || step === 6 || step === 8 || step === 11 || step === 13 || step === 15) ? 10 : 15, ease: 'linear' }}
               className="h-full bg-gradient-to-r from-[#c9a86a]/60 via-[#f2ecd8] to-[#c9a86a]"
             />
           </div>
@@ -345,7 +417,227 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             </motion.div>
           )}
 
-          {/* STEP 5 & STEP 7..15: Episodes 1..9 */}
+          {/* STEP 8: Kitchen & Couple Scene (Right before Episode 3) */}
+          {step === 8 && (
+            <motion.div
+              key="step-8"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#eab308]/40 shadow-[0_0_50px_rgba(234,179,8,0.2)] group">
+                <img
+                  src={kitchenCoupleImg}
+                  alt="En la calidez de la cocina, compartiendo hogar"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "En la calidez de la cocina, en cada detalle cotidiano y en el amor compartido, Dios renueva sus promesas..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#eab308]/15 border border-[#eab308]/40 text-[#eab308] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 3 — Nunca Sola
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#eab308]/30 to-[#c9a86a]/30 border border-[#eab308] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#eab308]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(234,179,8,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 3</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 11: Sisters & Dresses Scene (Right before Episode 5) */}
+          {step === 11 && (
+            <motion.div
+              key="step-11"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#3b82f6]/40 shadow-[0_0_50px_rgba(59,130,246,0.2)] group">
+                <img
+                  src={sistersDressesImg}
+                  alt="Dos hermanas en vestidos compartiendo la calidez del hogar"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "En los lazos sagrados de la familia, Dios sembró sonrisas, compañía y un amor que perdura para siempre..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#3b82f6]/15 border border-[#3b82f6]/40 text-[#60a5fa] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 5 — Dios es tu Refugio
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#3b82f6]/30 to-[#c9a86a]/30 border border-[#60a5fa] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#3b82f6]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 5</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 13: Classroom & Teacher Scene (Right before Episode 6) */}
+          {step === 13 && (
+            <motion.div
+              key="step-13"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#10b981]/40 shadow-[0_0_50px_rgba(16,185,129,0.2)] group">
+                <img
+                  src={teacherClassroomImg}
+                  alt="Enseñar con vocación, fe y amor en el aula"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "Enseñar es sembrar luz en los corazones; cuando se enseña con vocación y con Dios, las semillas florecen para siempre..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#10b981]/15 border border-[#10b981]/40 text-[#34d399] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 6 — Vocación y Sabiduría
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#10b981]/30 to-[#c9a86a]/30 border border-[#34d399] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#10b981]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 6</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 15: Framed Photo & Bible Scene (Right before Episode 7) */}
+          {step === 15 && (
+            <motion.div
+              key="step-15"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#f59e0b]/40 shadow-[0_0_50px_rgba(245,158,11,0.2)] group">
+                <img
+                  src={framedPhotoBibleImg}
+                  alt="Retrato familiar en marco de madera junto a la Sagrada Biblia"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "En cada foto guardada y en la Palabra viva, Dios atesora tu historia y la de quienes amas..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#fbbf24] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 7 — Promesa y Legado
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#f59e0b]/30 to-[#c9a86a]/30 border border-[#fbbf24] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#f59e0b]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(245,158,11,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 7</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 17: Bedroom Photo & Memory Scene (Right before Episode 8) */}
+          {step === 17 && (
+            <motion.div
+              key="step-17"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 1.4, ease: 'easeInOut' }}
+              className="w-full my-auto flex flex-col items-center justify-center space-y-4 max-w-md"
+            >
+              <div className="relative w-full rounded-2xl overflow-hidden border border-[#3b82f6]/40 shadow-[0_0_50px_rgba(59,130,246,0.2)] group">
+                <img
+                  src={womanPhotoRoomImg}
+                  alt="Sosteniendo la memoria en la tranquilidad del hogar"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-auto object-cover max-h-[290px] sm:max-h-[350px] rounded-2xl"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1f] via-transparent to-transparent opacity-85" />
+                <div className="absolute bottom-3 inset-x-3 text-center">
+                  <p className="font-serif italic text-xs sm:text-sm text-[#f2ecd8] drop-shadow-md">
+                    "Aun en el silencio de la llovizna y el dolor de los recuerdos, Dios abraza tu alma y sostiene tus lágrimas..."
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#3b82f6]/15 border border-[#3b82f6]/40 text-[#60a5fa] font-sans text-[10px] uppercase tracking-[0.25em]">
+                  Transición Cinematográfica
+                </span>
+                <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
+                  Iniciando Episodio 8 — Lo que nadie ve
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="px-7 py-2.5 rounded-full bg-gradient-to-r from-[#3b82f6]/30 to-[#c9a86a]/30 border border-[#60a5fa] text-[#f2ecd8] font-sans text-xs uppercase tracking-widest hover:bg-[#3b82f6]/40 transition-all active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.25)] flex items-center gap-2"
+              >
+                <span>Comenzar Episodio 8</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* STEP 5, 7, 9, 10, 12, 14, 16, 18, 19: Episodes 1..9 */}
           {currentEp && (
             <motion.div
               key={`ep-${currentEp.id}`}
@@ -414,10 +706,10 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             </motion.div>
           )}
 
-          {/* STEP 16: Final Scene / Transition to Dedication */}
-          {step === 16 && (
+          {/* STEP 20: Final Scene / Transition to Dedication */}
+          {step === 20 && (
             <motion.div
-              key="step-16"
+              key="step-20"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
@@ -476,13 +768,35 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
             : step === 5
             ? 'Episodio 1 / 9'
             : step === 6
-            ? 'Escena 2 — La Soledad'
+            ? 'Escena 2 — Soledad'
+            : step === 7
+            ? 'Episodio 2 / 9'
+            : step === 8
+            ? 'Escena 3 — Hogar'
+            : step === 9
+            ? 'Episodio 3 / 9'
+            : step === 10
+            ? 'Episodio 4 / 9'
+            : step === 11
+            ? 'Escena 4 — Hermandad'
+            : step === 12
+            ? 'Episodio 5 / 9'
+            : step === 13
+            ? 'Escena 5 — La Maestra'
+            : step === 14
+            ? 'Episodio 6 / 9'
+            : step === 15
+            ? 'Escena 6 — Fe y Familia'
             : step === 16
+            ? 'Episodio 7 / 9'
+            : step === 17
+            ? 'Escena 7 — Silencio y Memoria'
+            : step === 20
             ? 'Final'
-            : `Episodio ${step - 5} / 9`}
+            : `Episodio ${step - 10} / 9`}
         </span>
 
-        {step < 16 ? (
+        {step < 20 ? (
           <button
             onClick={handleNext}
             className="p-3 rounded-full bg-[#c9a86a]/20 border border-[#c9a86a] text-[#c9a86a] hover:bg-[#c9a86a] hover:text-[#0a0e1f] transition-all active:scale-90 shadow-[0_0_15px_rgba(201,168,106,0.3)]"
@@ -568,8 +882,63 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
                 <Sparkles className="w-3.5 h-3.5 text-[#14b8a6]" />
               </button>
 
+              <button
+                onClick={() => {
+                  setStep(8);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#eab308]/20 border border-[#eab308]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#eab308]">Escena Visual 3 — Calidez en el Hogar</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#eab308]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(11);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#3b82f6]/20 border border-[#3b82f6]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#60a5fa]">Escena Visual 4 — Hermandad y Amor Familiar</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#60a5fa]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(13);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#10b981]/20 border border-[#10b981]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#34d399]">Escena Visual 5 — La Vocación de Enseñar</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#34d399]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(15);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#f59e0b]/20 border border-[#f59e0b]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#fbbf24]">Escena Visual 6 — Retrato Familiar y Sagrada Biblia</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#fbbf24]" />
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep(17);
+                  setShowChaptersDrawer(false);
+                }}
+                className="text-left p-2.5 rounded-xl bg-[#131a33]/60 hover:bg-[#3b82f6]/20 border border-[#3b82f6]/30 text-xs text-[#f2ecd8] flex items-center justify-between"
+              >
+                <span className="font-medium text-[#60a5fa]">Escena Visual 7 — Silencio, Memoria y Esperanza</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#60a5fa]" />
+              </button>
+
               {EPISODES_DATA.map((ep, idx) => {
-                const epStep = idx === 0 ? 5 : idx + 6;
+                const epStep = idx === 0 ? 5 : idx === 1 ? 7 : idx === 2 ? 9 : idx === 3 ? 10 : idx === 4 ? 12 : idx === 5 ? 14 : idx === 6 ? 16 : idx === 7 ? 18 : 19;
                 const isCurrent = step === epStep;
                 return (
                   <button
