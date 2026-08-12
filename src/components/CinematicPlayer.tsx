@@ -399,9 +399,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#14b8a6]/15 border border-[#14b8a6]/40 text-[#14b8a6] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 2 — Amor Incondicional
                 </p>
@@ -443,9 +440,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#eab308]/15 border border-[#eab308]/40 text-[#eab308] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 3 — Nunca Sola
                 </p>
@@ -487,9 +481,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#3b82f6]/15 border border-[#3b82f6]/40 text-[#60a5fa] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 5 — Dios es tu Refugio
                 </p>
@@ -531,9 +522,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#10b981]/15 border border-[#10b981]/40 text-[#34d399] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 6 — Vocación y Sabiduría
                 </p>
@@ -575,9 +563,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/40 text-[#fbbf24] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 7 — Promesa y Legado
                 </p>
@@ -619,9 +604,6 @@ export const CinematicPlayer: React.FC<CinematicPlayerProps> = ({
               </div>
 
               <div className="space-y-1">
-                <span className="inline-block px-3 py-1 rounded-full bg-[#3b82f6]/15 border border-[#3b82f6]/40 text-[#60a5fa] font-sans text-[10px] uppercase tracking-[0.25em]">
-                  Transición Cinematográfica
-                </span>
                 <p className="font-serif italic text-base sm:text-lg text-[#f2ecd8]">
                   Iniciando Episodio 8 — Lo que nadie ve
                 </p>
