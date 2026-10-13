@@ -1,4 +1,4 @@
-export type ViewTab = 'cinematic' | 'acrostic' | 'cake' | 'memories' | 'dedication';
+export type ViewTab = 'cinematic' | 'acrostic' | 'cake' | 'memories' | 'dedication' | 'game';
 
 export interface Episode {
   id: number;
@@ -49,4 +49,24 @@ export interface MemoryItem {
   quote?: string;
   category: 'infancia' | 'musica' | 'familia' | 'maternidad' | 'docencia';
   iconName: string;
+}
+
+export interface GameLevel {
+  id: number;
+  stageName: string;
+  title: string;
+  subtitle: string;
+  iconName: string;
+  themeColor: string;
+  recognitionTitle: string;
+  recognitionText: string;
+  quoteVerse: {
+    text: string;
+    reference: string;
+  };
+  badgeUnlocked: string;
+  badgeDescription: string;
+  badgeIcon: string;
+  mechanicType: 'collect_stars' | 'melody_sequence' | 'courage_path' | 'love_rain' | 'wisdom_connect' | 'final_trophy';
+  instructions: string;
 }

@@ -5,12 +5,12 @@ import {
   Sparkles,
   Cake,
   BookOpen,
-  HeartHandshake,
   Gift,
   Volume2,
   VolumeX,
   Smartphone,
-  Maximize2
+  Maximize2,
+  Gamepad2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundEngine } from '../audio/soundEngine';
@@ -45,6 +45,7 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
   const navItems: { tab: ViewTab; label: string; icon: React.ReactNode }[] = [
     { tab: 'cinematic', label: 'Serie', icon: <Film className="w-4 h-4" /> },
     { tab: 'acrostic', label: 'S-A-N-D-Y', icon: <Sparkles className="w-4 h-4" /> },
+    { tab: 'game', label: 'Juego', icon: <Gamepad2 className="w-4 h-4" /> },
     { tab: 'cake', label: 'Pastel', icon: <Cake className="w-4 h-4" /> },
     { tab: 'memories', label: 'Historias', icon: <BookOpen className="w-4 h-4" /> },
     { tab: 'dedication', label: 'Carta', icon: <Gift className="w-4 h-4" /> },
@@ -112,7 +113,7 @@ export const NavbarMobile: React.FC<NavbarMobileProps> = ({
               <button
                 key={item.tab}
                 onClick={() => onSelectTab(item.tab)}
-                className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
+                className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl transition-all ${
                   isActive
                     ? 'text-[#c9a86a] bg-[#c9a86a]/15 font-medium shadow-[0_0_12px_rgba(201,168,106,0.15)]'
                     : 'text-[#f2ecd8]/50 hover:text-[#f2ecd8]/80'

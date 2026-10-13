@@ -9,6 +9,7 @@ import { MobileFrameWrapper } from './components/MobileFrameWrapper';
 
 import { CinematicPlayer } from './components/CinematicPlayer';
 import { AcrosticView } from './components/AcrosticView';
+import { LifeGameView } from './components/LifeGameView';
 import { BirthdayCakeView } from './components/BirthdayCakeView';
 import { MemoriesTimeline } from './components/MemoriesTimeline';
 import { DedicationView } from './components/DedicationView';
@@ -50,7 +51,7 @@ export default function App() {
       {/* Stars & Moon Background */}
       <BackgroundStars
         shadowOffsetX={moonShadowOffsetX}
-        showMoon={activeTab === 'cinematic' || activeTab === 'acrostic'}
+        showMoon={activeTab === 'cinematic' || activeTab === 'acrostic' || activeTab === 'game'}
       />
 
       {/* Main Container */}
@@ -91,7 +92,22 @@ export default function App() {
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <AcrosticView onGoToCake={() => handleSelectTab('cake')} />
+                <AcrosticView onGoToCake={() => handleSelectTab('game')} />
+              </motion.div>
+            )}
+
+            {activeTab === 'game' && (
+              <motion.div
+                key="tab-game"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.3 }}
+              >
+                <LifeGameView
+                  onGoToDedication={() => handleSelectTab('dedication')}
+                  onGoToCake={() => handleSelectTab('cake')}
+                />
               </motion.div>
             )}
 
